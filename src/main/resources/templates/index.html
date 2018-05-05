@@ -1,0 +1,1307 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>洛奇英雄传装备模拟器</title>
+    <!--<link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet"/>-->
+
+    <!--&lt;!&ndash; 最新的 Bootstrap 核心 JavaScript 文件 &ndash;&gt;-->
+    <!--<script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>-->
+
+    <!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
+    <script src="https://cdn.bootcss.com/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/jquery-serialize-object/2.5.0/jquery.serialize-object.min.js"></script>
+    <style type="text/css">
+        .formStyle{
+            text-align: left; COLOR: #0076C8; BACKGROUND-COLOR: #b9d8f3; font-weight: bold;
+        }
+    </style>
+</head>
+<body style="text-align:center;margin:30px auto;">
+    <h2 style="color: #417bf3">洛英装备模拟器</h2>
+    <p style="color: red">说明:
+        1.若自定义角色属性将不计算艾因拉赫、敢死队和远征团属性<br/>
+        2.防御力的计算公式暂时有误,会低于实际数值<br/>
+        3.模拟结果可能与游戏中数据存在微小误差</p>
+    <table width="85%" border="0" cellpadding="2" cellspacing="0" style="margin: 0 auto">
+        <tr>
+            <td width="65%">
+                <table border="0" cellpadding="3" cellspacing="0" width="100%" align="center" style="background-color: #ffffff; font-size:14px; border-collapse:separate; border-spacing:0px 1px;">
+                    <form id="iform">
+                        <tr class="formStyle">
+                            <td id="rolerTitle">
+                                角色:
+                            </td>
+                            <td colspan="6" id="rolerSelect">
+                                <select name="rolerId" id="rolerId">
+                                    <option value="" selected="selected">请选择</option>
+                                    <option value="149">菲欧纳</option>
+                                    <option value="150">烈士塔</option>
+                                    <option value="151">卡鲁</option>
+                                    <option value="55">伊菲</option>
+                                    <option value="152">凯伊</option>
+                                    <option value="165">维拉</option>
+                                    <option value="153">霍克</option>
+                                    <option value="154">琳</option>
+                                    <option value="155">海基</option>
+                                    <option value="156">艾丽莎</option>
+                                    <option value="158">芈璃</option>
+                                    <option value="-1">自定义</option>
+                                </select>
+                            </td>
+                            <td colspan="5" id="rolerProperty1" hidden="hidden">
+                                力量:<input size="10" type="text" name="roler[strength]"/>
+                                敏捷:<input size="10" type="text" name="roler[agility]"/>
+                                智力:<input size="10" type="text" name="roler[intelligence]"/>
+                                意志:<input size="10" type="text" name="roler[volition]"/>
+                            </td>
+                        </tr>
+                        <tr id="rolerProperty2" hidden="hidden" class="formStyle">
+                            <td colspan="5">
+                                防御:<input size="10" type="text" name="roler[defense]"/>
+                                暴击:<input size="10" type="text" name="roler[crit]"/>
+                                生命:<input size="10" type="text" name="roler[hp]"/>
+                                体力:<input size="10" type="text" name="roler[vit]"/>
+                            </td>
+                        </tr>
+                        <tr class="formStyle">
+                            <td>
+                                武器:
+                            </td>
+                            <td>
+                                <select name="equipmentList[0][id]" id="equipment0_id">
+                                    <option value="" selected="selected">请选择</option>
+                                    <option value="28">雷吉纳武器</option>
+                                    <option value="29">布拉哈武器</option>
+                                    <option value="30">境界守护者武器</option>
+                                    <option value="31">鲁拉巴达武器</option>
+                                    <option value="32">哈维登特武器</option>
+                                    <option value="49">图拉汗武器</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select name="equipmentList[0][upLevelId]">
+                                    <option value="" selected="selected">强化等级</option>
+                                    <option value="1">+10</option>
+                                    <option value="2">+11</option>
+                                    <option value="3">+12</option>
+                                    <option value="4">+13</option>
+                                    <option value="5">+14</option>
+                                    <option value="6">+15</option>
+                                    <option value="7">+16</option>
+                                    <option value="8">+17</option>
+                                    <option value="9">+18</option>
+                                    <option value="10">+19</option>
+                                    <option value="11">+20</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select name="equipmentList[0][firstMagicId]" id="equipment0_firstMagicId">
+                                    <option value="" selected="selected">首次附魔</option>
+                                    <option value="88" id="hundun" disabled="disabled">混沌的</option>
+                                    <option value="90">正义的</option>
+                                    <option value="91">不义的</option>
+                                    <option value="92">猎豹的</option>
+                                    <option value="93">富饶的</option>
+                                    <option value="94">确凿的</option>
+                                    <option value="95">曙光般的</option>
+                                    <option value="96">决定性的</option>
+                                    <option value="97">勇敢的</option>
+                                    <option value="98">古朴的</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select name="equipmentList[0][secondMagicId]" id="equipment0_secondMagicId">
+                                    <option value="" selected="selected">进阶附魔</option>
+                                    <option value="99">审判</option>
+                                    <option value="100">断罪</option>
+                                    <option value="101">花瓣</option>
+                                    <option value="102">勇猛</option>
+                                    <option value="103">天诛</option>
+                                    <option value="104">挑战</option>
+                                    <option value="105">野心</option>
+                                    <option value="106">弱化</option>
+                                    <option value="84">机会</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select name="equipmentList[0][starType]">
+                                    <option value="2000" selected="selected">★★</option>
+                                    <option value="3000">★★★</option>
+                                    <option value="4000">★★★★</option>
+                                    <option value="5000">★★★★★</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select name="equipmentList[0][fairyType]">
+                                    <option value="" selected="selected">精灵石</option>
+                                    <option value="1000">攻速+1</option>
+                                    <option value="2000">平衡+2</option>
+                                    <option value="3000">暴击+2</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr class="formStyle">
+                            <td>
+                                副武器:
+                            </td>
+                            <td>
+                                <select name="equipmentList[1][id]" id="equipment1_id">
+                                    <option value="" selected="selected">请选择</option>
+                                    <option value="33">90盾牌</option>
+                                    <option value="38">90巨盾</option>
+                                    <option value="51">图拉汗盾牌</option>
+                                    <option value="50">图拉汗巨盾</option>
+                                    <option value="52">符文魂器</option>
+                                    <option value="43">传承之书</option>
+                                    <option value="53">魔族的书</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select name="equipmentList[1][upLevelId]" id="equipment1_uplevel">
+                                    <option value="" selected="selected">强化等级</option>
+                                    <option value="24">+10</option>
+                                    <option value="25">+11</option>
+                                    <option value="26">+12</option>
+                                    <option value="27">+13</option>
+                                    <option value="28">+14</option>
+                                    <option value="29">+15</option>
+                                    <option value="30">+16</option>
+                                    <option value="31">+17</option>
+                                    <option value="32">+18</option>
+                                    <option value="33">+19</option>
+                                    <option value="34">+20</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select name="equipmentList[1][firstMagicId]" id="equipment1_firstMagicId">
+                                    <option value="" selected="selected">首次附魔</option>
+                                    <option value="140">贤者的</option>
+                                    <option value="142">洒脱的</option>
+                                    <option value="143">惊心动魄的</option>
+                                    <option value="144">防御的</option>
+                                    <option value="147">封印的</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select name="equipmentList[1][secondMagicId]" id="equipment1_secondMagicId">
+                                    <option value="" selected="selected">进阶附魔</option>
+                                    <option value="148">真相</option>
+                                    <option value="141">倾盆大雨</option>
+                                    <option value="145">金刚石</option>
+                                    <option value="146">地精</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select name="equipmentList[1][starType]">
+                                    <option value="2000" selected="selected">★★</option>
+                                    <option value="3000">★★★</option>
+                                    <option value="4000">★★★★</option>
+                                    <option value="5000">★★★★★</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select name="equipmentList[1][fairyType]">
+                                    <option value="" selected="selected">精灵石</option>
+                                    <option value="1000">攻速+1</option>
+                                    <option value="2000">平衡+2</option>
+                                    <option value="3000">暴击+2</option>
+                                    <option value="4000">防御+103</option>
+                                    <option value="5000">暴击抵抗+1</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr class="formStyle">
+                            <td>
+                                头部:
+                            </td>
+                            <td>
+                                <select name="equipmentList[2][id]" id="equipment2_id">
+                                    <option value="" selected="selected">请选择</option>
+                                    <option value="3">雷吉纳头盔</option>
+                                    <option value="4">布拉哈头盔</option>
+                                    <option value="5">境界守护者头盔</option>
+                                    <option value="6">鲁拉巴达头盔</option>
+                                    <option value="7">哈维登特头盔</option>
+                                    <option value="44">图拉汗头盔</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select name="equipmentList[2][upLevelId]">
+                                    <option value="" selected="selected">强化等级</option>
+                                    <option value="12">+10</option>
+                                    <option value="13">+11</option>
+                                    <option value="14">+12</option>
+                                    <option value="15">+13</option>
+                                    <option value="16">+14</option>
+                                    <option value="17">+15</option>
+                                    <option value="18">+16</option>
+                                    <option value="19">+17</option>
+                                    <option value="20">+18</option>
+                                    <option value="21">+19</option>
+                                    <option value="22">+20</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select name="equipmentList[2][firstMagicId]" id="equipment2_firstMagicId">
+                                    <option value="" selected="selected">首次附魔</option>
+                                    <option value="110">记忆的</option>
+                                    <option value="108" id="lenjing">冷静的</option>
+                                    <option value="114">保持平衡的</option>
+                                    <option value="115">努力的</option>
+                                    <option value="116">守护的</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select name="equipmentList[2][secondMagicId]" id="equipment2_secondMagicId">
+                                    <option value="" selected="selected">进阶附魔</option>
+                                    <option value="117">远征</option>
+                                    <option value="121">热忱</option>
+                                    <option value="122">落叶</option>
+                                    <option value="123">抵抗</option>
+                                    <option value="124">犰狳</option>
+                                    <option value="125">茉莉花</option>
+                                    <option value="126">勇气</option>
+                                    <option value="127">致命</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select name="equipmentList[2][starType]">
+                                    <option value="2000" selected="selected">★★</option>
+                                    <option value="3000">★★★</option>
+                                    <option value="4000">★★★★</option>
+                                    <option value="5000">★★★★★</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select name="equipmentList[2][fairyType]">
+                                    <option value="" selected="selected">精灵石</option>
+                                    <option value="4000">防御+103</option>
+                                    <option value="5000">暴击抵抗+1</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr class="formStyle">
+                            <td>
+                                胸部:
+                            </td>
+                            <td>
+                                <select name="equipmentList[3][id]" id="equipment3_id">
+                                    <option value="" selected="selected">请选择</option>
+                                    <option value="18">雷吉纳胸甲</option>
+                                    <option value="19">布拉哈胸甲</option>
+                                    <option value="20">境界守护者胸甲</option>
+                                    <option value="21">鲁拉巴达胸甲</option>
+                                    <option value="22">哈维登特胸甲</option>
+                                    <option value="45">图拉汗盔甲</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select name="equipmentList[3][upLevelId]">
+                                    <option value="" selected="selected">强化等级</option>
+                                    <option value="12">+10</option>
+                                    <option value="13">+11</option>
+                                    <option value="14">+12</option>
+                                    <option value="15">+13</option>
+                                    <option value="16">+14</option>
+                                    <option value="17">+15</option>
+                                    <option value="18">+16</option>
+                                    <option value="19">+17</option>
+                                    <option value="20">+18</option>
+                                    <option value="21">+19</option>
+                                    <option value="22">+20</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select name="equipmentList[3][firstMagicId]" id="equipment3_firstMagicId">
+                                    <option value="" selected="selected">首次附魔</option>
+                                    <option value="112">时间的</option>
+                                    <option value="113">坚持不懈的</option>
+                                    <option value="114">保持平衡的</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select name="equipmentList[3][secondMagicId]" id="equipment3_secondMagicId">
+                                    <option value="" selected="selected">进阶附魔</option>
+                                    <option value="119">烙印</option>
+                                    <option value="120">保护</option>
+                                    <option value="121">热忱</option>
+                                    <option value="122">落叶</option>
+                                    <option value="123">抵抗</option>
+                                    <option value="124">犰狳</option>
+                                    <option value="125">茉莉花</option>
+                                    <option value="126">勇气</option>
+                                    <option value="127">致命</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select name="equipmentList[3][starType]">
+                                    <option value="2000" selected="selected">★★</option>
+                                    <option value="3000">★★★</option>
+                                    <option value="4000">★★★★</option>
+                                    <option value="5000">★★★★★</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select name="equipmentList[3][fairyType]">
+                                    <option value="" selected="selected">精灵石</option>
+                                    <option value="4000">防御+103</option>
+                                    <option value="5000">暴击抵抗+1</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr class="formStyle">
+                            <td>
+                                腿部:
+                            </td>
+                            <td>
+                                <select name="equipmentList[4][id]" id="equipment4_id">
+                                    <option value="" selected="selected">请选择</option>
+                                    <option value="23">雷吉纳护腿</option>
+                                    <option value="24">布拉哈护腿</option>
+                                    <option value="25">境界守护者护腿</option>
+                                    <option value="26">鲁拉巴达护腿</option>
+                                    <option value="27">哈维登特护腿</option>
+                                    <option value="46">图拉汗护腿</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select name="equipmentList[4][upLevelId]">
+                                    <option value="" selected="selected">强化等级</option>
+                                    <option value="12">+10</option>
+                                    <option value="13">+11</option>
+                                    <option value="14">+12</option>
+                                    <option value="15">+13</option>
+                                    <option value="16">+14</option>
+                                    <option value="17">+15</option>
+                                    <option value="18">+16</option>
+                                    <option value="19">+17</option>
+                                    <option value="20">+18</option>
+                                    <option value="21">+19</option>
+                                    <option value="22">+20</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select name="equipmentList[4][firstMagicId]" id="equipment4_firstMagicId">
+                                    <option value="" selected="selected">首次附魔</option>
+                                    <option value="110">记忆的</option>
+                                    <option value="108" id ="lenjing2">冷静的</option>
+                                    <option value="114">保持平衡的</option>
+                                    <option value="115">努力的</option>
+                                    <option value="116">守护的</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select name="equipmentList[4][secondMagicId]" id="equipment4_secondMagicId">
+                                    <option value="" selected="selected">进阶附魔</option>
+                                    <option value="117">远征</option>
+                                    <option value="121">热忱</option>
+                                    <option value="122">落叶</option>
+                                    <option value="123">抵抗</option>
+                                    <option value="124">犰狳</option>
+                                    <option value="125">茉莉花</option>
+                                    <option value="126">勇气</option>
+                                    <option value="127">致命</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select name="equipmentList[4][starType]">
+                                    <option value="2000" selected="selected">★★</option>
+                                    <option value="3000">★★★</option>
+                                    <option value="4000">★★★★</option>
+                                    <option value="5000">★★★★★</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select name="equipmentList[4][fairyType]">
+                                    <option value="" selected="selected">精灵石</option>
+                                    <option value="4000">防御+103</option>
+                                    <option value="5000">暴击抵抗+1</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr class="formStyle">
+                            <td>
+                                脚部:
+                            </td>
+                            <td>
+                                <select name="equipmentList[5][id]" id="equipment5_id">
+                                    <option value="" selected="selected">请选择</option>
+                                    <option value="13">雷吉纳长靴</option>
+                                    <option value="14">布拉哈长靴</option>
+                                    <option value="15">境界守护者长靴</option>
+                                    <option value="16">鲁拉巴达长靴</option>
+                                    <option value="17">哈维登特鞋子</option>
+                                    <option value="47">图拉汗鞋子</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select name="equipmentList[5][upLevelId]">
+                                    <option value="" selected="selected">强化等级</option>
+                                    <option value="12">+10</option>
+                                    <option value="13">+11</option>
+                                    <option value="14">+12</option>
+                                    <option value="15">+13</option>
+                                    <option value="16">+14</option>
+                                    <option value="17">+15</option>
+                                    <option value="18">+16</option>
+                                    <option value="19">+17</option>
+                                    <option value="20">+18</option>
+                                    <option value="21">+19</option>
+                                    <option value="22">+20</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select name="equipmentList[5][firstMagicId]" id="equipment5_firstMagicId">
+                                    <option value="" selected="selected">首次附魔</option>
+                                    <option value="109" id="kuqi1">哭泣的</option>
+                                    <option value="111">重述的</option>
+                                    <option value="114">保持平衡的</option>
+                                    <option value="115">努力的</option>
+                                    <option value="116">守护的</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select name="equipmentList[5][secondMagicId]" id="equipment5_secondMagicId">
+                                    <option value="" selected="selected">进阶附魔</option>
+                                    <option value="118">回音</option>
+                                    <option value="121">热忱</option>
+                                    <option value="122">落叶</option>
+                                    <option value="123">抵抗</option>
+                                    <option value="124">犰狳</option>
+                                    <option value="125">茉莉花</option>
+                                    <option value="126">勇气</option>
+                                    <option value="127">致命</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select name="equipmentList[5][starType]">
+                                    <option value="2000" selected="selected">★★</option>
+                                    <option value="3000">★★★</option>
+                                    <option value="4000">★★★★</option>
+                                    <option value="5000">★★★★★</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select name="equipmentList[5][fairyType]">
+                                    <option value="" selected="selected">精灵石</option>
+                                    <option value="4000">防御+103</option>
+                                    <option value="5000">暴击抵抗+1</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr class="formStyle">
+                            <td>
+                                手部:
+                            </td>
+                            <td>
+                                <select name="equipmentList[6][id]" id="equipment6_id">
+                                    <option value="" selected = "selected">请选择</option>
+                                    <option value="8">雷吉纳护手</option>
+                                    <option value="9">布拉哈护手</option>
+                                    <option value="10">境界守护者护手</option>
+                                    <option value="11">鲁拉巴达护手</option>
+                                    <option value="12">哈维登特臂铠</option>
+                                    <option value="48">图拉汗护手</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select name="equipmentList[6][upLevelId]">
+                                    <option value="" selected="selected">强化等级</option>
+                                    <option value="12">+10</option>
+                                    <option value="13">+11</option>
+                                    <option value="14">+12</option>
+                                    <option value="15">+13</option>
+                                    <option value="16">+14</option>
+                                    <option value="17">+15</option>
+                                    <option value="18">+16</option>
+                                    <option value="19">+17</option>
+                                    <option value="20">+18</option>
+                                    <option value="21">+19</option>
+                                    <option value="22">+20</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select name="equipmentList[6][firstMagicId]" id="equipment6_firstMagicId">
+                                    <option value="" selected="selected">首次附魔</option>
+                                    <option value="109" id="kuqi2">哭泣的</option>
+                                    <option value="111">重述的</option>
+                                    <option value="114">保持平衡的</option>
+                                    <option value="115">努力的</option>
+                                    <option value="116">守护的</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select name="equipmentList[6][secondMagicId]" id="equipment6_secondMagicId">
+                                    <option value="" selected="selected">进阶附魔</option>
+                                    <option value="118">回音</option>
+                                    <option value="121">热忱</option>
+                                    <option value="122">落叶</option>
+                                    <option value="123">抵抗</option>
+                                    <option value="124">犰狳</option>
+                                    <option value="125">茉莉花</option>
+                                    <option value="126">勇气</option>
+                                    <option value="127">致命</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select name="equipmentList[6][starType]">
+                                    <option value="2000" selected="selected">★★</option>
+                                    <option value="3000">★★★</option>
+                                    <option value="4000">★★★★</option>
+                                    <option value="5000">★★★★★</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select name="equipmentList[6][fairyType]">
+                                    <option value="" selected="selected">精灵石</option>
+                                    <option value="4000">防御+103</option>
+                                    <option value="5000">暴击抵抗+1</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr class="formStyle">
+                            <td>
+                                耳环:
+                            </td>
+                            <td>
+                                <select name="equipmentList[7][id]">
+                                    <option value="" selected="selected">请选择</option>
+                                    <option value="74">海盗耳环</option>
+                                    <option value="75">无罪者的哭泣</option>
+                                    <option value="76">无罪者的眼泪</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select name="equipmentList[7][firstMagicId]">
+                                    <option value="" selected="selected">首次附魔</option>
+                                    <option value="132">迅速的</option>
+                                    <option value="133">有意义的</option>
+                                    <option value="134">多疑的</option>
+                                    <option value="135">坚强的</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select name="equipmentList[7][secondMagicId]">
+                                    <option value="" selected="selected">进阶附魔</option>
+                                    <option value="136">热情</option>
+                                    <option value="137">心灵</option>
+                                    <option value="138">活力</option>
+                                    <option value="139">痛苦</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select name="equipmentList[7][starType]">
+                                    <option value="2000" selected="selected">★★</option>
+                                    <option value="3000">★★★</option>
+                                    <option value="4000">★★★★</option>
+                                    <option value="5000">★★★★★</option>
+                                </select>
+                            </td>
+                            <td colspan="2">
+                                <select name="equipmentList[7][fairyType]">
+                                    <option value="" selected="selected">精灵石</option>
+                                    <option value="1000">攻速+1</option>
+                                    <option value="2000">平衡+2</option>
+                                    <option value="3000">暴击+2</option>
+                                    <option value="4000">防御+103</option>
+                                    <option value="5000">暴击抵抗+1</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr class="formStyle">
+                            <td>
+                                胸针:
+                            </td>
+                            <td>
+                                <select name="equipmentList[8][id]" id="equipment8_id">
+                                    <option value="" selected="selected">请选择</option>
+                                    <option value="72">元素晶核胸针</option>
+                                    <option value="159">支配者胸针</option>
+                                    <option value="73">月光蓝宝石胸针</option>
+                                    <option value="77">小猫胸针</option>
+                                    <option value="78">白色小猫胸针</option>
+                                    <option value="79">蓝色小猫胸针</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select name="equipmentList[8][firstMagicId]" id="equipment8_firstMagicId">
+                                    <option value="" selected="selected">首次附魔</option>
+                                    <option value="132">迅速的</option>
+                                    <option value="133">有意义的</option>
+                                    <option value="134">多疑的</option>
+                                    <option value="135">坚强的</option>
+                                    <option value="85" id="baowu">宝物猎人的</option>
+                                    <option value="86" id="xingguang">星光</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select name="equipmentList[8][secondMagicId]" id="equipment8_secondMagicId">
+                                    <option value="" selected="selected">进阶附魔</option>
+                                    <option value="136">热情</option>
+                                    <option value="137">心灵</option>
+                                    <option value="138">活力</option>
+                                    <option value="139">痛苦</option>
+                                    <option value="87" id="gaoshang">高尚的</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select name="equipmentList[8][starType]">
+                                    <option value="2000" selected="selected">★★</option>
+                                    <option value="3000">★★★</option>
+                                    <option value="4000">★★★★</option>
+                                    <option value="5000">★★★★★</option>
+                                </select>
+                            </td>
+                            <td colspan="2">
+                                <select name="equipmentList[8][fairyType]">
+                                    <option value="" selected="selected">精灵石</option>
+                                    <option value="1000">攻速+1</option>
+                                    <option value="2000">平衡+2</option>
+                                    <option value="3000">暴击+2</option>
+                                    <option value="4000">防御+103</option>
+                                    <option value="5000">暴击抵抗+1</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr class="formStyle">
+                            <td>
+                                腰带:
+                            </td>
+                            <td>
+                                <select name="equipmentList[9][id]">
+                                    <option value="" selected="selected">请选择</option>
+                                    <option value="71">悲痛之腰带</option>
+                                    <option value="69">绝望之腰带</option>
+                                    <option value="81">紫晶腰带</option>
+                                    <option value="70">橄榄石腰带</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select name="equipmentList[9][firstMagicId]">
+                                    <option value="" selected="selected">首次附魔</option>
+                                    <option value="128">隐隐的</option>
+                                    <option value="129">小巧的</option>
+                                    <option value="132">迅速的</option>
+                                    <option value="133">有意义的</option>
+                                    <option value="134">多疑的</option>
+                                    <option value="135">坚强的</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select name="equipmentList[9][secondMagicId]">
+                                    <option value="" selected="selected">进阶附魔</option>
+                                    <option value="136">热情</option>
+                                    <option value="137">心灵</option>
+                                    <option value="138">活力</option>
+                                    <option value="139">痛苦</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select name="equipmentList[9][starType]">
+                                    <option value="2000" selected="selected">★★</option>
+                                    <option value="3000">★★★</option>
+                                    <option value="4000">★★★★</option>
+                                    <option value="5000">★★★★★</option>
+                                </select>
+                            </td>
+                            <td colspan="2">
+                                <select name="equipmentList[9][fairyType]">
+                                    <option value="" selected="selected">精灵石</option>
+                                    <option value="1000">攻速+1</option>
+                                    <option value="2000">平衡+2</option>
+                                    <option value="3000">暴击+2</option>
+                                    <option value="4000">防御+103</option>
+                                    <option value="5000">暴击抵抗+1</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr class="formStyle">
+                            <td>
+                                左戒指:
+                            </td>
+                            <td>
+                                <select name="equipmentList[10][id]">
+                                    <option value="" selected="selected">请选择</option>
+                                    <option value="62">闪电刻印</option>
+                                    <option value="63">新月之光戒指</option>
+                                    <option value="64">新月的宣判</option>
+                                    <option value="65">深海怪人</option>
+                                    <option value="66">酷寒的刺</option>
+                                    <option value="68">酷寒的意志</option>
+                                    <option value="80">酷寒的匕首</option>
+                                    <option value="67">酷寒的怨念</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select name="equipmentList[10][firstMagicId]">
+                                    <option value="" selected="selected">首次附魔</option>
+                                    <option value="130">亡者的</option>
+                                    <option value="131">闪亮的</option>
+                                    <option value="132">迅速的</option>
+                                    <option value="133">有意义的</option>
+                                    <option value="134">多疑的</option>
+                                    <option value="135">坚强的</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select name="equipmentList[10][secondMagicId]">
+                                    <option value="" selected="selected">进阶附魔</option>
+                                    <option value="136">热情</option>
+                                    <option value="137">心灵</option>
+                                    <option value="138">活力</option>
+                                    <option value="139">痛苦</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select name="equipmentList[10][starType]">
+                                    <option value="2000" selected="selected">★★</option>
+                                    <option value="3000">★★★</option>
+                                    <option value="4000">★★★★</option>
+                                    <option value="5000">★★★★★</option>
+                                </select>
+                            </td>
+                            <td colspan="2">
+                                <select name="equipmentList[10][fairyType]">
+                                    <option value="" selected="selected">精灵石</option>
+                                    <option value="1000">攻速+1</option>
+                                    <option value="2000">平衡+2</option>
+                                    <option value="3000">暴击+2</option>
+                                    <option value="4000">防御+103</option>
+                                    <option value="5000">暴击抵抗+1</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr class="formStyle">
+                            <td>
+                                右戒指:
+                            </td>
+                            <td>
+                                <select name="equipmentList[11][id]">
+                                    <option value="" selected="selected">请选择</option>
+                                    <option value="62">闪电刻印</option>
+                                    <option value="63">新月之光戒指</option>
+                                    <option value="64">新月的宣判</option>
+                                    <option value="65">深海怪人</option>
+                                    <option value="66">酷寒的刺</option>
+                                    <option value="68">酷寒的意志</option>
+                                    <option value="80">酷寒的匕首</option>
+                                    <option value="67">酷寒的怨念</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select name="equipmentList[11][firstMagicId]">
+                                    <option value="" selected="selected">首次附魔</option>
+                                    <option value="130">亡者的</option>
+                                    <option value="131">闪亮的</option>
+                                    <option value="132">迅速的</option>
+                                    <option value="133">有意义的</option>
+                                    <option value="134">多疑的</option>
+                                    <option value="135">坚强的</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select name="equipmentList[11][secondMagicId]">
+                                    <option value="" selected="selected">进阶附魔</option>
+                                    <option value="136">热情</option>
+                                    <option value="137">心灵</option>
+                                    <option value="138">活力</option>
+                                    <option value="139">痛苦</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select name="equipmentList[11][starType]">
+                                    <option value="2000" selected="selected">★★</option>
+                                    <option value="3000">★★★</option>
+                                    <option value="4000">★★★★</option>
+                                    <option value="5000">★★★★★</option>
+                                </select>
+                            </td>
+                            <td colspan="2">
+                                <select name="equipmentList[11][fairyType]">
+                                    <option value="" selected="selected">精灵石</option>
+                                    <option value="1000">攻速+1</option>
+                                    <option value="2000">平衡+2</option>
+                                    <option value="3000">暴击+2</option>
+                                    <option value="4000">防御+103</option>
+                                    <option value="5000">暴击抵抗+1</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr class="formStyle">
+                            <td>
+                                项链:
+                            </td>
+                            <td>
+                                <select name="equipmentList[12][id]">
+                                    <option value="" selected="selected">请选择</option>
+                                    <option value="177">小猫项链</option>
+                                    <option value="178">蓝色小猫项链</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select name="equipmentList[12][firstMagicId]">
+                                    <option value="" selected="selected">首次附魔</option>
+                                    <option value="132">迅速的</option>
+                                    <option value="133">有意义的</option>
+                                    <option value="134">多疑的</option>
+                                    <option value="135">坚强的</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select name="equipmentList[12][secondMagicId]">
+                                    <option value="" selected="selected">进阶附魔</option>
+                                    <option value="136">热情</option>
+                                    <option value="137">心灵</option>
+                                    <option value="138">活力</option>
+                                    <option value="139">痛苦</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select name="equipmentList[12][starType]">
+                                    <option value="2000" selected="selected">★★</option>
+                                    <option value="3000">★★★</option>
+                                    <option value="4000">★★★★</option>
+                                    <option value="5000">★★★★★</option>
+                                </select>
+                            </td>
+                            <td colspan="2">
+                                <select name="equipmentList[12][fairyType]">
+                                    <option value="" selected="selected">精灵石</option>
+                                    <option value="1000">攻速+1</option>
+                                    <option value="2000">平衡+2</option>
+                                    <option value="3000">暴击+2</option>
+                                    <option value="4000">防御+103</option>
+                                    <option value="5000">暴击抵抗+1</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr class="formStyle">
+                            <td>
+                                工艺品附魔:
+                            </td>
+                            <td>
+                                <select name="artwareMagicId1">
+                                    <option value="" selected="selected">首次附魔</option>
+                                    <option value="132">迅速的</option>
+                                    <option value="133">有意义的</option>
+                                    <option value="134">多疑的</option>
+                                    <option value="135">坚强的</option>
+                                </select>
+                            </td>
+                            <td colspan="5">
+                                <select name="artwareMagicId2">
+                                    <option value="" selected="selected">进阶附魔</option>
+                                    <option value="136">热情</option>
+                                    <option value="137">心灵</option>
+                                    <option value="138">活力</option>
+                                    <option value="139">痛苦</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr class="formStyle" id="leftBangle">
+                            <td>左手镯:</td>
+                            <td>物攻:<input size="10" type="text" name="bangle1[attack]"/></td>
+                            <td>魔攻:<input size="10" type="text" name="bangle1[magicAttack]"/></td>
+                            <td>防御:<input size="10" type="text" name="bangle1[defense]"/></td>
+                            <td colspan="3">生命:<input size="10" type="text" name="bangle1[hp]"/></td>
+                        </tr>
+                        <tr class="formStyle" id="rightBangle">
+                            <td>右手镯:</td>
+                            <td>物攻:<input size="10" type="text" name="bangle2[attack]"/></td>
+                            <td>魔攻:<input size="10" type="text" name="bangle2[magicAttack]"/></td>
+                            <td>防御:<input size="10" type="text" name="bangle2[defense]" /></td>
+                            <td colspan="3">生命:<input size="10" type="text" name="bangle2[hp]"/></td>
+                        </tr>
+                        <tr class="formStyle" id="badge">
+                            <td>时装徽章属性:</td>
+                            <td>物攻:<input size="10" type="text" name="badge[attack]"/></td>
+                            <td>魔攻:<input size="10" type="text" name="badge[magicAttack]"/></td>
+                            <td>暴击:<input size="10" type="text" name="badge[crit]" /></td>
+                            <td colspan="3">解禁:<input size="10" type="text" name="badge[liftBan]"/></td>
+                        </tr>
+                        <tr class="formStyle">
+                            <td>其他:</td>
+                            <td>时装:
+                                <select name="fashionId">
+                                    <option value="" selected="selected">请选择</option>
+                                    <option value="56">C</option>
+                                    <option value="57">B</option>
+                                    <option value="58">A</option>
+                                    <option value="59">S</option>
+                                </select>
+                            </td>
+                            <td>艾因拉赫:
+                                <select name="honourId">
+                                    <option value="" selected="selected">请选择</option>
+                                    <option value="166">全银牌</option>
+                                    <option value="60">不喝药</option>
+                                    <option value="61">全金牌</option>
+                                </select>
+                            </td>
+                            <td>敢死队:
+                                <select name="battleId">
+                                    <option value="" selected="selected">请选择</option>
+                                    <option value="160">5%</option>
+                                    <option value="161">25%</option>
+                                    <option value="162">50%</option>
+                                    <option value="163">75%</option>
+                                    <option value="164">100%</option>
+                                </select>
+                            </td>
+                            <td>远征团:
+                                <select name="expeditionId">
+                                    <option value="" selected="selected">请选择</option>
+                                    <option value="167">LV.1</option>
+                                    <option value="168">LV.2</option>
+                                    <option value="169">LV.3</option>
+                                    <option value="170">LV.4</option>
+                                    <option value="171">LV.5</option>
+                                    <option value="172">LV.6</option>
+                                    <option value="173">LV.7</option>
+                                    <option value="174">LV.8</option>
+                                    <option value="175">LV.9</option>
+                                    <option value="176">LV.10</option>
+                                </select>
+                            </td>
+                            <td colspan="2" align="right"><input type="button" value="属性生成" onclick="createProperty()"/></td>
+                        </tr>
+                    </form>
+                </table>
+            </td>
+            <td width="20%" valign="bottom">
+                <table border="0" cellpadding="3" cellspacing="1" width="100%" align="center" style="background-color: #F4FAFF; font-size:14px">
+                    <tr>
+                        <td align="left">力量</td>
+                        <td align="right" id="strength">0</td>
+                    </tr>
+                    <tr>
+                        <td align="left">敏捷</td>
+                        <td align="right" id="agility">0</td>
+                    </tr>
+                    <tr>
+                        <td align="left">智力</td>
+                        <td align="right" id="intelligence">0</td>
+                    </tr>
+                    <tr>
+                        <td align="left">意志</td>
+                        <td align="right" id="volition">0</td>
+                    </tr>
+                    <tr>
+                        <td align="left">最大生命值</td>
+                        <td align="right" id="hp">0</td>
+                    </tr>
+                    <tr>
+                        <td align="left">最大体力值</td>
+                        <td align="right" id="vit">0</td>
+                    </tr>
+                    <tr>
+                        <td align="left">攻击力</td>
+                        <td align="right" id="attack">0</td>
+                    </tr>
+                    <tr>
+                        <td align="left">防御力</td>
+                        <td align="right" id="defense">0</td>
+                    </tr>
+                    <tr>
+                        <td align="left">暴击抵抗</td>
+                        <td align="right" id="critDef">0</td>
+                    </tr>
+                    <tr>
+                        <td align="left">伤害平衡</td>
+                        <td align="right" id="balance">0</td>
+                    </tr>
+                    <tr>
+                        <td align="left">暴击</td>
+                        <td align="right" id="crit">0</td>
+                    </tr>
+                    <tr>
+                        <td align="left">攻击速度</td>
+                        <td align="right" id="attackSpd">0</td>
+                    </tr>
+                    <tr>
+                        <td align="left">追加伤害</td>
+                        <td align="right" id="addAttack">0</td>
+                    </tr>
+                    <tr>
+                        <td align="left">攻击力限制解除</td>
+                        <td align="right" id="liftBan">0</td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+<script>
+    $(function () {
+        $("#equipment0_id").change(function () {
+            if ($(this).children("option:selected").val() != "49") {
+                $("#hundun").attr("disabled","disabled");
+            } else {
+                $("#hundun").removeAttr("disabled","disabled");
+            }
+        });
+        $("#rolerId").change(function () {
+            if ($(this).children("option:selected").val() == 149) {
+                $("#rolerTitle").removeAttr("rowspan");
+                $("#rolerSelect").removeAttr("rowspan");
+                $("#rolerSelect").attr("colspan","6");
+                $("#rolerProperty1").attr("hidden","hidden");
+                $("#rolerProperty2").attr("hidden","hidden");
+                $("#equipment1_id option").remove();
+                $("#equipment1_id").append('<option value="">请选择</option>');
+                $("#equipment1_id").append('<option value="'+33+'">90盾牌</option>');
+                $("#equipment1_id").append('<option value="'+38+'">90巨盾</option>');
+                $("#equipment1_id").append('<option value="'+51+'">图拉汗盾牌</option>');
+                $("#equipment1_id").append('<option value="'+50+'">图拉汗巨盾</option>');
+            } else if ($(this).children("option:selected").val() == 156){
+                $("#rolerTitle").removeAttr("rowspan");
+                $("#rolerSelect").removeAttr("rowspan");
+                $("#rolerSelect").attr("colspan","6");
+                $("#rolerProperty1").attr("hidden","hidden");
+                $("#rolerProperty2").attr("hidden","hidden");
+                $("#equipment1_id option").remove();
+                $("#equipment1_uplevel option").remove();
+                $("#equipment1_uplevel").append('<option value="">强化等级</option>');
+                $("#equipment1_id").append('<option value="">请选择</option>');
+                $("#equipment1_id").append('<option value="'+52+'">符文之器</option>');
+            } else if ($(this).children("option:selected").val() == -1){
+                $("#rolerTitle").attr("rowspan","2");
+                $("#rolerSelect").removeAttr("colspan");
+                $("#rolerSelect").attr("rowspan","2");
+                $("#rolerProperty1").removeAttr("hidden");
+                $("#rolerProperty2").removeAttr("hidden");
+            } else {
+                $("#rolerTitle").removeAttr("rowspan");
+                $("#rolerSelect").removeAttr("rowspan");
+                $("#rolerSelect").attr("colspan","6");
+                $("#rolerProperty1").attr("hidden","hidden");
+                $("#rolerProperty2").attr("hidden","hidden");
+                $("#equipment1_id option").remove();
+                $("#equipment1_uplevel option").remove();
+                $("#equipment1_uplevel").append('<option value="">强化等级</option>');
+                $("#equipment1_id").append('<option value="">请选择</option>');
+                $("#equipment1_id").append('<option value="'+43+'">传承之书</option>');
+                $("#equipment1_id").append('<option value="'+53+'">魔族的书</option>');
+            }
+        });
+        $("#equipment1_id").change(function () {
+            if ($(this).children("option:selected").val() > 38) {
+                $("#equipment1_firstMagicId option").remove();
+                $("#equipment1_firstMagicId").append('<option value="">首次附魔</option>');
+                $("#equipment1_firstMagicId").append('<option value="'+140+'">贤者的</option>');
+                $("#equipment1_firstMagicId").append('<option value="'+147+'">封印的</option>');
+
+                $("#equipment1_secondMagicId option").remove();
+                $("#equipment1_secondMagicId").append('<option value="">进阶附魔</option>');
+                $("#equipment1_secondMagicId").append('<option value="'+148+'">真相</option>');
+                $("#equipment1_secondMagicId").append('<option value="'+141+'">倾盆大雨</option>');
+            } else {
+                $("#equipment1_firstMagicId option").remove();
+                $("#equipment1_firstMagicId").append('<option value="">首次附魔</option>');
+                $("#equipment1_firstMagicId").append('<option value="'+142+'">洒脱的</option>');
+                $("#equipment1_firstMagicId").append('<option value="'+143+'">惊心动魄的</option>');
+                $("#equipment1_firstMagicId").append('<option value="'+144+'">防御的</option>');
+
+                $("#equipment1_secondMagicId option").remove();
+                $("#equipment1_secondMagicId").append('<option value="">进阶附魔</option>');
+                $("#equipment1_secondMagicId").append('<option value="'+145+'">金刚石</option>');
+                $("#equipment1_secondMagicId").append('<option value="'+146+'">地精</option>');
+            }
+        });
+        $("#equipment2_id").change(function () {
+            if ($(this).children("option:selected").val() != "44") {
+                $("#lenjing").attr("disabled","disabled");
+            } else {
+                $("#lenjing").removeAttr("disabled","disabled");
+            }
+        });
+        $("#equipment4_id").change(function () {
+            if ($(this).children("option:selected").val() != "46") {
+                $("#lenjing2").attr("disabled","disabled");
+            } else {
+                $("#lenjing2").removeAttr("disabled","disabled");
+            }
+        });
+        $("#equipment5_id").change(function () {
+            if ($(this).children("option:selected").val() != "47") {
+                $("#kuqi1").attr("disabled","disabled");
+            } else {
+                $("#kuqi1").removeAttr("disabled","disabled");
+            }
+        });
+        $("#equipment6_id").change(function () {
+            if ($(this).children("option:selected").val() != "48") {
+                $("#kuqi2").attr("disabled","disabled");
+            } else {
+                $("#kuqi2").removeAttr("disabled","disabled");
+            }
+        });
+        $("#equipment8_id").change(function () {
+            if ($(this).children("option:selected").val() != "73") {
+                $("#xingguang").attr("disabled","disabled");
+                $("#gaoshang").attr("disabled","disabled");
+            } else {
+                $("#xingguang").removeAttr("disabled","disabled");
+                $("#gaoshang").removeAttr("disabled","disabled");
+            }
+            if ($(this).children("option:selected").val() != "85") {
+                $("#baowu").attr("disabled","disabled");
+            } else {
+                $("#baowu").removeAttr("disabled","disabled");
+            }
+        });
+    });
+    var lastProperty;
+    function createProperty() {
+        if (!validetaInput()) {
+            return;
+        }
+        var json_data = $('#iform').serializeJSON();
+        $.ajax({
+            type: "POST",
+            url: "/api/getRoler",
+            contentType: "application/json; charset=utf-8",
+            data: json_data,
+            dataType: "json",
+            success: function (message) {
+                if (message) {
+                    showProperty(message);
+                }
+            },
+            error: function (message) {
+                alert("提交数据失败！");
+            }
+        });
+    }
+    function showProperty(obj) {
+        if (typeof(lastProperty) != 'undefined') {
+            var minusStrength = obj.strength - lastProperty.strength;
+            if (minusStrength >= 0) {
+                $("#strength").html(obj.strength +'<span style="color: limegreen">(↑'+minusStrength+')</span>');
+            } else {
+                $("#strength").html(obj.strength +'<span style="color: red">(↓'+minusStrength+')</span>');
+            }
+            var minusAgility = obj.agility - lastProperty.agility;
+            if (minusAgility >= 0) {
+                $("#agility").html(obj.agility +'<span style="color: limegreen">(↑'+minusAgility+')</span>');
+            } else {
+                $("#agility").html(obj.agility +'<span style="color: red">(↓'+minusAgility+')</span>');
+            }
+            var minusIntelligence = obj.intelligence - lastProperty.intelligence;
+            if (minusIntelligence >= 0) {
+                $("#intelligence").html(obj.intelligence +'<span style="color: limegreen">(↑'+minusIntelligence+')</span>');
+            } else {
+                $("#intelligence").html(obj.intelligence +'<span style="color: red">(↓'+minusIntelligence+')</span>');
+            }
+            var minusVolition = obj.volition - lastProperty.volition;
+            if (minusVolition >= 0) {
+                $("#volition").html(obj.volition +'<span style="color: limegreen">(↑'+minusVolition+')</span>');
+            } else {
+                $("#volition").html(obj.volition +'<span style="color: red">(↓'+minusVolition+')</span>');
+            }
+            var minusHp = obj.hp - lastProperty.hp;
+            if (minusHp >= 0) {
+                $("#hp").html(obj.hp +'<span style="color: limegreen">(↑'+minusHp+')</span>');
+            } else {
+                $("#hp").html(obj.hp +'<span style="color: red">(↓'+minusHp+')</span>');
+            }
+            var minusVit = obj.vit - lastProperty.vit;
+            if (minusVit >= 0) {
+                $("#vit").html(obj.vit +'<span style="color: limegreen">(↑'+minusVit+')</span>');
+            } else {
+                $("#vit").html(obj.vit +'<span style="color: red">(↓'+minusVit+')</span>');
+            }
+
+            var minusAttack = obj.attack - lastProperty.attack;
+            if (minusAttack >= 0) {
+                $("#attack").html(obj.attack +'<span style="color: limegreen">(↑'+minusAttack+')</span>');
+            } else {
+                $("#attack").html(obj.attack +'<span style="color: red">(↓'+minusAttack+')</span>');
+            }
+
+            var minusDefense = obj.defense - lastProperty.defense;
+            if (minusDefense >= 0) {
+                $("#defense").html(obj.defense +'<span style="color: limegreen">(↑'+minusDefense+')</span>');
+            } else {
+                $("#defense").html(obj.defense +'<span style="color: red">(↓'+minusDefense+')</span>');
+            }
+
+            var minusCritDef = obj.critDef - lastProperty.critDef;
+            if (minusCritDef >= 0) {
+                $("#critDef").html(obj.critDef +'<span style="color: limegreen">(↑'+minusCritDef+')</span>');
+            } else{
+                $("#critDef").html(obj.critDef +'<span style="color: red">(↓'+minusCritDef+')</span>');
+            }
+
+            var minusBalance = obj.balance - lastProperty.balance;
+            if (minusBalance >= 0) {
+                $("#balance").html(obj.balance +'<span style="color: limegreen">(↑'+minusBalance+')</span>');
+            } else {
+                $("#balance").html(obj.balance +'<span style="color: red">(↓'+minusBalance+')</span>');
+            }
+
+            var minusCrit = obj.crit - lastProperty.crit;
+            if (minusCrit >= 0) {
+                $("#crit").html(obj.crit +'<span style="color: limegreen">(↑'+minusCrit+')</span>');
+            } else {
+                $("#crit").html(obj.crit +'<span style="color: red">(↓'+minusCrit+')</span>');
+            }
+            var minusAttackSpd = obj.attackSpd - lastProperty.attackSpd;
+            if (minusAttackSpd >= 0) {
+                $("#attackSpd").html(obj.attackSpd +'<span style="color: limegreen">(↑'+minusAttackSpd+')</span>');
+            } else{
+                $("#attackSpd").html(obj.attackSpd +'<span style="color: red">(↓'+minusAttackSpd+')</span>');
+            }
+            var minusAddAttack = obj.addAttack - lastProperty.addAttack;
+            if (minusAddAttack >= 0) {
+                $("#addAttack").html(obj.addAttack +'<span style="color: limegreen">(↑'+minusAddAttack+')</span>');
+            } else{
+                $("#addAttack").html(obj.addAttack +'<span style="color: red">(↓'+minusAddAttack+')</span>');
+            }
+            var minusLiftBan = obj.liftBan - lastProperty.liftBan;
+            if (minusLiftBan >= 0) {
+                $("#liftBan").html(obj.liftBan +'<span style="color: limegreen">(↑'+minusLiftBan+')</span>');
+            } else{
+                $("#liftBan").html(obj.liftBan +'<span style="color: red">(↓'+minusLiftBan+')</span>');
+            }
+        } else {
+            $("#strength").html(obj.strength);
+            $("#agility").html(obj.agility);
+            $("#intelligence").html(obj.intelligence);
+            $("#volition").html(obj.volition);
+            $("#hp").html(obj.hp);
+            $("#vit").html(obj.vit);
+            $("#attack").html(obj.attack);
+            $("#defense").html(obj.defense);
+            $("#critDef").html(obj.critDef);
+            $("#balance").html(obj.balance);
+            $("#crit").html(obj.crit);
+            $("#attackSpd").html(obj.attackSpd);
+            $("#addAttack").html(obj.addAttack);
+            $("#liftBan").html(obj.liftBan);
+        }
+        lastProperty = obj;
+    }
+    function validetaInput() {
+        var propertyAlert = true;
+        if ($("input[type='text']").size() > 0) {
+            $("input[type='text']").each(function () {
+                if ($.trim($(this).val()) != "") {
+                    if (!isPlusInteger($.trim($(this).val()))) {
+                        alert("请填写正确数值");
+                        $(this).focus();
+                        propertyAlert = false;
+                        return false;
+                    }
+                }
+            });
+        }
+        return propertyAlert;
+    }
+    function isPlusInteger(str) {
+        var patrn = /^([+]?)(\d+)$/;
+        return patrn.test(str);
+    }
+</script>
+</html>
