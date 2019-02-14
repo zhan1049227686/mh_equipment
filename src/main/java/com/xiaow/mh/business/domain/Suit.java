@@ -31,4 +31,12 @@ public class Suit implements AppDO{
     private Integer defense;
 
     private Integer count;
+
+    public Suit(String name, Integer strength) {
+        this.name = name;
+        this.strength = strength;
+    }
+
+    public Suit() {
+    }
 }
